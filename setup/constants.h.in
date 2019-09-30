@@ -677,6 +677,7 @@
   integer, parameter :: ICRUST_CRUST2    = 2    ! Crust2.0
   integer, parameter :: ICRUST_CRUSTMAPS = 3    ! Crustmaps
   integer, parameter :: ICRUST_EPCRUST   = 4    ! EPcrust
+  integer, parameter :: ICRUST_CJCRUST   = 7    ! CJcrust
   integer, parameter :: ICRUST_CRUST_SH  = 5    ! Spherical-Harmonics Crust
   integer, parameter :: ICRUST_EUCRUST   = 6    ! EUcrust07
 

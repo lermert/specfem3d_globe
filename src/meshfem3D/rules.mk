@@ -91,6 +91,7 @@ meshfem3D_OBJECTS = \
 	$O/model_crustmaps.check.o \
 	$O/model_eucrust.check.o \
 	$O/model_epcrust.check.o \
+	$O/model_cjcrust.check.o \
 	$O/model_full_sh.check.o \
 	$O/model_gapp2.check.o \
 	$O/model_gll.check.o \
@@ -139,7 +140,7 @@ meshfem3D_MODULES = \
 	$(FC_MODDIR)/model_crust_1_0_par.$(FC_MODEXT) \
 	$(FC_MODDIR)/model_crust_2_0_par.$(FC_MODEXT) \
 	$(FC_MODDIR)/model_crustmaps_par.$(FC_MODEXT) \
-	$(FC_MODDIR)/model_epcrust_par.$(FC_MODEXT) \
+	$(FC_MODDIR)/model_cjcrust_par.$(FC_MODEXT) \
 	$(FC_MODDIR)/model_eucrust_par.$(FC_MODEXT) \
 	$(FC_MODDIR)/model_full_sh_crust_par.$(FC_MODEXT) \
 	$(FC_MODDIR)/model_full_sh_mantle_par.$(FC_MODEXT) \

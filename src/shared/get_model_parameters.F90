@@ -154,6 +154,13 @@
     ! in case it has an ending for the crust, remove it from the name
     MODEL_ROOT = MODEL_ROOT(1: len_trim(MODEL_L)-8)
   endif
+  ! checks with '_cjcrust' option
+  if (len_trim(MODEL_ROOT) > 8 ) ending = MODEL_ROOT(len_trim(MODEL_ROOT)-7:len_trim(MODEL_ROOT))
+  if (trim(ending) == '_cjcrust') then
+    impose_crust = ICRUST_CJCRUST
+    ! in case it has an ending for the crust, remove it from the name
+    MODEL_ROOT = MODEL_ROOT(1: len_trim(MODEL_L)-8)
+  endif
   ! checks with '_eucrust' option
   if (len_trim(MODEL_ROOT) > 8 ) ending = MODEL_ROOT(len_trim(MODEL_ROOT)-7:len_trim(MODEL_ROOT))
   if (trim(ending) == '_eucrust') then

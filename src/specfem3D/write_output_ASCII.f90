@@ -45,7 +45,10 @@
   implicit none
 
   real(kind=CUSTOM_REAL), dimension(5,NTSTEP_BETWEEN_OUTPUT_SEISMOS) :: seismogram_tmp
-
+  !laura
+  real(kind=CUSTOM_REAL), dimension(NTSTEP_BETWEEN_OUTPUT_SEISMOS) :: values
+  real(kind=CUSTOM_REAL), dimension(NTSTEP_BETWEEN_OUTPUT_SEISMOS) :: timesteps
+  
   integer :: iorientation
   character(len=MAX_STRING_LEN) :: sisname,sisname_big_file
 
@@ -85,7 +88,6 @@
 
     ! seismogram value
     value = dble(seismogram_tmp(iorientation,isample))
-
     ! current time increment
     it = seismo_offset + isample
 
@@ -95,16 +97,24 @@
     else
       timeval = dble(it-1)*DT - t0
     endif
-
+    
     ! writes out to file
     if (SAVE_ALL_SEISMOS_IN_ONE_FILE .and. USE_BINARY_FOR_LARGE_FILE) then
-      ! distinguish between single and double precision for reals
-      write(IOUT) real(timeval, kind=CUSTOM_REAL), real(value, kind=CUSTOM_REAL)
+    !  ! distinguish between single and double precision for reals
+    !  write(IOUT) real(timeval, kind=CUSTOM_REAL), real(value, kind=CUSTOM_REAL)    
+      ! laura modif
+      values(isample) = value
+      timesteps(isample) = timeval 
     else
       ! distinguish between single and double precision for reals
       write(IOUT,*) real(timeval, kind=CUSTOM_REAL), ' ', real(value, kind=CUSTOM_REAL)
     endif
   enddo
+  
+  if (SAVE_ALL_SEISMOS_IN_ONE_FILE .and. USE_BINARY_FOR_LARGE_FILE) then 
+    write(IOUT) timesteps
+    write(IOUT) values
+  endif
 
   if (.not. SAVE_ALL_SEISMOS_IN_ONE_FILE) close(IOUT)
 

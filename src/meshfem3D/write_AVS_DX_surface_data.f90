@@ -1,4 +1,3 @@
-!=====================================================================
 !
 !          S p e c f e m 3 D  G l o b e  V e r s i o n  7 . 0
 !          --------------------------------------------------
@@ -255,7 +254,9 @@
                        else
                           dvp = dvp + (sqrt((kappavstore(i,j,k,ispec)+4.*muvstore(i,j,k,ispec)/3.) &
                                /rhostore(i,j,k,ispec)) - sngl(vp))/sngl(vp)
-                          dvs = dvs + (sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec)) - sngl(vs))/sngl(vs)
+                          ! dvs = dvs + (sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec)) - sngl(vs))/sngl(vs)
+                          ! laura: want to know absolute values
+                          dvs = dvs + sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
                        endif
 
                     enddo

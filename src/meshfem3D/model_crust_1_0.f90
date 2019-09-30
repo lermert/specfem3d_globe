@@ -222,6 +222,7 @@
     found_crust = .false.
   endif
 
+
   ! non-dimensionalize
   if (found_crust) then
     scaleval = ONE / ( R_EARTH_KM * dsqrt(PI*GRAV*RHOAV) )
@@ -503,6 +504,7 @@
       dist = ONE - exp( - dist*dist*10.0d0 )
       ! increases smoothing degree inside of critical region to 2 degree
       cap_degree = cap_degree + dist
+      print*, 'More smoothing over the Andes'
     endif
   endif
 
@@ -514,6 +516,8 @@
   vels(:) = ZERO
   rho(:) = ZERO
   thick(:) = ZERO
+  icolat = int(1 + (90.d0 - lat))
+  ilon = int(1 + (180.d0 + lon))
 
   ! loops over weight points
   do i = 1,NTHETA*NPHI
@@ -546,6 +550,9 @@
 
     ! sediment thickness
     h_sed = thickl(3) + thickl(4) + thickl(5)
+    if (myrank == 0) then
+      print*, xlat(i), xlon(i), h_sed
+    endif
 
     ! takes upper crust value if sediment too thin
     if (h_sed < MINIMUM_SEDIMENT_THICKNESS) then

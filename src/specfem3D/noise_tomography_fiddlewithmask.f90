@@ -66,7 +66,12 @@
   normal_z_noise_out = zcoord / sqrt(xcoord**2 + ycoord**2 + zcoord**2)
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  noise distribution
   ! here, the noise is assumed to be uniform
-  mask_noise_out = 1.0
+  if (theta_in >= 0.7243116395776468 .and. theta_in <= 1.0733774899765127 .and. phi_in > 5.323254218582705 .and. phi_in < 5.672320068981571) then
+    mask_noise_out = 1.0
+  else
+    mask_noise_out = 0.0
+  endif
+  ! laura: I hardcoded a specifc mask here to compare to my tool.
   !******************************** change your noise characteristics above ****************************************
   !*****************************************************************************************************************
 

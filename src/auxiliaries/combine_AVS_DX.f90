@@ -755,18 +755,23 @@
 ! compute absolute maximum for dvs
     rnorm_factor = maxval(dabs(dvs(:)))
 
-! map to [-1,1]
-    dvs(:) = dvs(:) / rnorm_factor
+! laura: want to know values in kmps
+    dvs(:) = dvs(:) / 0.1459938d0
 
-! apply non-linear scaling
-    do ispec_scale_AVS_DX = 1,ntotspecAVS_DX
-      xval = dvs(ispec_scale_AVS_DX)
-      if (xval >= 0.) then
-        dvs(ispec_scale_AVS_DX) = xval ** SCALE_NON_LINEAR
-      else
-        dvs(ispec_scale_AVS_DX) = - dabs(xval) ** SCALE_NON_LINEAR
-      endif
-    enddo
+! map to [-1,1]
+! laura outcommented
+!     dvs(:) = dvs(:) / rnorm_factor
+
+! ! apply non-linear scaling
+!     do ispec_scale_AVS_DX = 1,ntotspecAVS_DX
+!       xval = dvs(ispec_scale_AVS_DX)
+!       if (xval >= 0.) then
+!         dvs(ispec_scale_AVS_DX) = xval ** SCALE_NON_LINEAR
+!       else
+!         dvs(ispec_scale_AVS_DX) = - dabs(xval) ** SCALE_NON_LINEAR
+!       endif
+!     enddo
+! laura outcommented
 
    endif
   endif

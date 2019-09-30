@@ -231,6 +231,12 @@
       call model_epcrust_broadcast()
       ! by default crust 1.0 (global coverage)
       call model_crust_1_0_broadcast()
+    
+    case (ICRUST_CJCRUST)
+      ! CJcrust (regional Northeast China and Japan model)
+      call model_cjcrust_broadcast()
+      ! by default crust 1.0 (global coverage)
+      call model_crust_1_0_broadcast()
 
     case (ICRUST_CRUST_SH)
       ! SH crustmaps
@@ -948,6 +954,26 @@
     case (ICRUST_EPCRUST)
       ! if defined within lat/lon-range, takes vp/vs/rho/moho from eucrust07
       call model_epcrust(lat,lon,r,vpc_area,vsc_area,rhoc_area,moho_area,found_crust_area,elem_in_crust,point_in_area)
+      if (point_in_area) then
+        vpvc = vpc_area
+        vphc = vpc_area
+        vsvc = vsc_area
+        vshc = vsc_area
+        rhoc = rhoc_area
+        moho = moho_area
+        found_crust = found_crust_area
+      else
+        ! by default takes Crust1.0 values
+        call model_crust_1_0(lat,lon,r,vpc,vsc,rhoc,moho,found_crust,elem_in_crust)
+        vpvc = vpc
+        vphc = vpc
+        vsvc = vsc
+        vshc = vsc
+      endif
+
+    case (ICRUST_CJCRUST)
+      ! if defined within lat/lon-range, takes vp/vs/rho/moho from crustal model
+      call model_cjcrust(lat,lon,r,vpc_area,vsc_area,rhoc_area,moho_area,found_crust_area,elem_in_crust,point_in_area)
       if (point_in_area) then
         vpvc = vpc_area
         vphc = vpc_area
