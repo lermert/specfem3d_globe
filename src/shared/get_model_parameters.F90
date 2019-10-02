@@ -161,6 +161,13 @@
     ! in case it has an ending for the crust, remove it from the name
     MODEL_ROOT = MODEL_ROOT(1: len_trim(MODEL_L)-8)
   endif
+  ! checks with '_simucrust' option
+  if (len_trim(MODEL_ROOT) > 10 ) ending = MODEL_ROOT(len_trim(MODEL_ROOT)-9:len_trim(MODEL_ROOT))
+  if (trim(ending) == '_simucrust') then
+    impose_crust = ICRUST_SIMUCRUST
+    ! in case it has an ending for the crust, remove it from the name
+    MODEL_ROOT = MODEL_ROOT(1: len_trim(MODEL_L)-10)
+  endif
   ! checks with '_eucrust' option
   if (len_trim(MODEL_ROOT) > 8 ) ending = MODEL_ROOT(len_trim(MODEL_ROOT)-7:len_trim(MODEL_ROOT))
   if (trim(ending) == '_eucrust') then

@@ -13,10 +13,10 @@ SAVE_FORWARD                    = .false.   # save last frame of forward simulat
 NCHUNKS                         = 1
 
 # angular width of the first chunk (not used if full sphere with six chunks)
-ANGULAR_WIDTH_XI_IN_DEGREES     = 20.d0   # angular size of a chunk
-ANGULAR_WIDTH_ETA_IN_DEGREES    = 20.d0
-CENTER_LATITUDE_IN_DEGREES      = 40.d0
-CENTER_LONGITUDE_IN_DEGREES     = 25.d0
+ANGULAR_WIDTH_XI_IN_DEGREES     = 40.d0   # angular size of a chunk
+ANGULAR_WIDTH_ETA_IN_DEGREES    = 40.d0
+CENTER_LATITUDE_IN_DEGREES      = 38.5d0
+CENTER_LONGITUDE_IN_DEGREES     = 135.d0
 GAMMA_ROTATION_AZIMUTH          = 0.d0
 
 # number of elements at the surface along the two sides of the first chunk
@@ -57,7 +57,7 @@ NPROC_ETA                       = 2
 #                          associated reference model rather than the default 3D crustal model
 #                          e.g. s20rts_1Dcrust, s362ani_1Dcrust, etc.
 #
-MODEL                           = 1D_isotropic_prem
+MODEL                           = s20rts_simucrust
 
 # parameters describing the Earth model
 OCEANS                          = .true.
@@ -163,7 +163,7 @@ MOVIE_START                     = 0
 MOVIE_STOP                      = 40000
 
 # save mesh files to check the mesh
-SAVE_MESH_FILES                 = .false.
+SAVE_MESH_FILES                 = .true.
 
 # restart files (number of runs can be 1 or higher, choose 1 for no restart files)
 NUMBER_OF_RUNS                  = 1

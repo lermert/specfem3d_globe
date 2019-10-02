@@ -23,5 +23,5 @@ FCFLAGS='-O3' \
 
 mkdir -p bin
 make xmeshfem3D -j 4
-
+make xspecfem3D -j 4
 
