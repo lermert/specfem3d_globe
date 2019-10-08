@@ -395,6 +395,7 @@ xwrite_profile_OBJECTS += \
 	$O/model_epcrust.check.o \
 	$O/model_cjcrust.check.o \
 	$O/model_simucrust.check.o \
+	$O/model_jpcrust.check.o \
 	$O/model_full_sh.check.o \
 	$O/model_gapp2.check.o \
 	$O/model_gll.check.o \

@@ -8,10 +8,11 @@ output_file = 'simute_2017_model'
 crust1_layers = 'crust1.0/crust1.bnds'
 crust1_layers = np.loadtxt(crust1_layers)
 cap_degree = 0.5
+cap_degree_moho = 1.0  # crust 1.0 is 1 by 1 degree, so 1 degree is minimum
 n_theta = 20
 n_phi = 4
 lat_min, lat_max = (16, 60)
-lon_min, lon_max = (104, 166)  # there are a few samples at lon < 115:
+lon_min, lon_max = (100, 170)  # there are a few samples at lon < 115:
 # substitute them by using the ones just inside the model, i.e. 114 -> 115 deg
 interval = 0.25
 depth_interval = 1.0  # in km
@@ -46,7 +47,7 @@ print(radii_model)
 
 def get_smoothed_moho_crust1(lat, lon):
     sm_lats, sm_lons, sm_wghts = \
-        smooth_weights_CAP_vardegree(lon, lat, cap_degree, n_theta, n_phi)
+        smooth_weights_CAP_vardegree(lon, lat, cap_degree_moho, n_theta, n_phi)
     sm_moho = 0.
     sm_topo = 0.
 
@@ -169,6 +170,8 @@ for lon in lons:
         plot_mohos.append(moho)
         vs_plot.append(vs_sm[ix_plot_depth])
 
+print(lons.shape)
+print(lats.shape)
 plot_lats = np.asarray(plot_lats)
 plot_lons = np.asarray(plot_lons)
 plot_mohos = np.asarray(plot_mohos)

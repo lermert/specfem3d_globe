@@ -57,7 +57,7 @@ NPROC_ETA                       = 2
 #                          associated reference model rather than the default 3D crustal model
 #                          e.g. s20rts_1Dcrust, s362ani_1Dcrust, etc.
 #
-MODEL                           = s20rts_simucrust
+MODEL                           = s40rts_jpcrust
 
 # parameters describing the Earth model
 OCEANS                          = .true.

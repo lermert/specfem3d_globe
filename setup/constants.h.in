@@ -681,6 +681,7 @@
   integer, parameter :: ICRUST_CRUST_SH  = 5    ! Spherical-Harmonics Crust
   integer, parameter :: ICRUST_EUCRUST   = 6    ! EUcrust07
   integer, parameter :: ICRUST_SIMUCRUST = 8    ! Simute et al., 2017
+  integer, parameter :: ICRUST_JPCRUST   = 9    ! Nishida et al., 2008
 
 ! define flag for 3D Earth model
   integer, parameter :: THREE_D_MODEL_S20RTS        = 101

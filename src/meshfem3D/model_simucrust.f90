@@ -37,15 +37,15 @@
   !       longitude of model: 115 - 160 degree N
   character(len=*), parameter :: PATHNAME_SIMUCRUST = 'DATA/simucrust/simucrust.txt'
 
-  double precision, parameter :: SIMUCRUST_LON_MIN = 104.0d0
-  double precision, parameter :: SIMUCRUST_LON_MAX = 166.0d0
+  double precision, parameter :: SIMUCRUST_LON_MIN = 100.0d0
+  double precision, parameter :: SIMUCRUST_LON_MAX = 170.0d0
   double precision, parameter :: SIMUCRUST_LAT_MIN =  16.0d0
   double precision, parameter :: SIMUCRUST_LAT_MAX =  60.0d0
   double precision, parameter :: SIMUCRUST_SAMPLE = 0.25d0
   double precision, parameter :: SIMUCRUST_SAMPLE_DEP = 1.0d0
 
   ! arrays for crustal model
-  integer, parameter :: SIMUCRUST_NLON = 249, SIMUCRUST_NLAT = 177, &
+  integer, parameter :: SIMUCRUST_NLON = 281, SIMUCRUST_NLAT = 177, &
   SIMUCRUST_NDEP = 56
 
   double precision,dimension(:,:,:),allocatable :: lon_simu,lat_simu
