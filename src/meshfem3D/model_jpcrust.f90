@@ -37,16 +37,16 @@
   !       model is buffered by 1-degree smoothed crust1.0
   character(len=*), parameter :: PATHNAME_JPCRUST = 'DATA/jpcrust/jpcrust.txt'
 
-  double precision, parameter :: JPCRUST_LON_MIN = 99.99d0
-  double precision, parameter :: JPCRUST_LON_MAX = 170.1d0
-  double precision, parameter :: JPCRUST_LAT_MIN =  15.99d0
-  double precision, parameter :: JPCRUST_LAT_MAX =  60.1d0
+  double precision, parameter :: JPCRUST_LON_MIN = 100.0d0
+  double precision, parameter :: JPCRUST_LON_MAX = 170.0d0
+  double precision, parameter :: JPCRUST_LAT_MIN =  16.0d0
+  double precision, parameter :: JPCRUST_LAT_MAX =  60.d0
   double precision, parameter :: JPCRUST_SAMPLE = 0.2d0
-  double precision, parameter :: JPCRUST_SAMPLE_DEP = 1.0d0
+  double precision, parameter :: JPCRUST_SAMPLE_DEP = 0.1d0
 
   ! arrays for crustal model
-  integer, parameter :: JPCRUST_NLON = 352, JPCRUST_NLAT = 222, &
-  JPCRUST_NDEP = 60
+  integer, parameter :: JPCRUST_NLON = 351, JPCRUST_NLAT = 221, &
+  JPCRUST_NDEP = 501
 
   double precision,dimension(:,:,:),allocatable :: lon_jp,lat_jp
   double precision, dimension(:, :, :), allocatable :: moho_jp,depth_jp
@@ -228,9 +228,9 @@
   
   if (depth < moho .or. elem_in_crust) then
     found_crust = .true.
-    if (myrank == 0) then
-      print*, lat, lon, x, vp, vs, moho
-    endif
+    ! if (myrank == 0) then
+    !   print*, lat, lon, depth, vp, vs, moho
+    ! endif
   endif
   if (found_crust) then
     scaleval = dsqrt(PI*GRAV*RHOAV)
@@ -258,9 +258,9 @@
   double precision:: lon,lat,dep
   integer:: ilon,jlat,kdep
 
-  ilon = nint((lon-JPCRUST_LON_MIN)/JPCRUST_SAMPLE)+1
-  jlat = nint((lat-JPCRUST_LAT_MIN)/JPCRUST_SAMPLE)+1
-  kdep = nint(dep / JPCRUST_SAMPLE_DEP) +1
+  ilon = floor((lon-JPCRUST_LON_MIN)/JPCRUST_SAMPLE)+1
+  jlat = floor((lat-JPCRUST_LAT_MIN)/JPCRUST_SAMPLE)+1
+  kdep = floor(dep / JPCRUST_SAMPLE_DEP) +1
 
   if (ilon < 1) ilon = 1
   if (ilon > JPCRUST_NLON) ilon = JPCRUST_NLON

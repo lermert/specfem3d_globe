@@ -1,4 +1,4 @@
-    # transcribe Zheng et al. (2011) model into ascii format
+# transcribe Zheng et al. (2011) model into ascii format
 import os
 import numpy as np
 from noisi_v1.util.plot import plot_grid
@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from netCDF4 import Dataset
 from smoothing_routines import smooth_weights_CAP_vardegree
-
+import time
 
 path_to_model = '/home/lermert/Dropbox/Japan/Models/velocity_models/\
 MODEL_Zheng_NEChina_2011/Zheng_NEChina_2011/'
-topo_file = 'ETOPO1_Bed_g_gmt4.grd'
+topo_file = 'ETOPO2v2g_f4.nc'  # 'ETOPO1_Bed_g_gmt4.grd'
 topo = Dataset(topo_file)
 topo_lat = topo.variables['y'][:]
 topo_lon = topo.variables['x'][:]
@@ -31,12 +31,13 @@ crust1_rho = np.loadtxt(crust1_rho)[:, :]
 cap_degree = 1
 n_theta = 4
 n_phi = 20
+smash_topo = True
 
 output_file = 'zheng_2011_model_sed1km.txt'
 lat_min, lat_max = (16, 60)
-lon_min, lon_max = (114, 156)
+lon_min, lon_max = (100, 170)
 lat_min_model, lat_max_model = (16, 60)   # (30, 58)
-lon_min_model, lon_max_model = (114, 156)  # (114, 144)
+lon_min_model, lon_max_model = (100, 170)  # (114, 144)
 interval = 0.5
 min_moho, max_moho = (7., 50.)
 depth_interval = 0.05  # in km
@@ -54,7 +55,7 @@ missing_locations = [[36.0, 132.5], [36.0, 133.], [36.0, 133.5], [36., 134.],
                      [41.5, 140.], [42., 140.], [42.5, 140.],
                      [45., 140.]]
 cm = plt.cm.gist_rainbow
-outfilename = 'zheng_model_sed1km'
+outfilename = 'zheng_model_sed1km_new'
 # tasks:
 # - read in model parameters
 # - discard those at extra sampling in depth
@@ -135,7 +136,7 @@ def read_model_from_file(lat, lon):
     else:
         f = os.path.join(path_to_model, '%g_%g_model' % (lon, lat))
     mod = np.loadtxt(f)
-    print(f)
+    # print(f)
     deps_m = []
     vss = []
     vps = []
@@ -208,14 +209,17 @@ def get_parameters_from_model(lat, lon, depth_samples):
         try:
             vps, vss, rhos, deps_m = read_model_from_file(x_lat, x_lon)
             moho = suggest_moho(deps_m, vss)
-            print('smoothing, ', x_lat, x_lon, ' Zheng model')
+            # print('smoothing, ', x_lat, x_lon, ' Zheng model')
+            if smash_topo:
+                depth_samples = np.linspace(-topography, max_depth,
+                                            len(depth_samples))
             vss = get_parameter_profile(deps_m, vss, depth_samples)
             vps = get_parameter_profile(deps_m, vps, depth_samples)
             rhos = get_parameter_profile(deps_m, rhos, depth_samples)
         except OSError:
             vps, vss, rhos, moho, topography =\
                 get_parameters_from_crust1(x_lat, x_lon, depth_samples)
-            print('smoothing, ', x_lat, x_lon, ' Crust1')
+            # print('smoothing, ', x_lat, x_lon, ' Crust1')
         sm_vps += vps * weight
         sm_vss += vss * weight
         sm_rhos += rhos * weight
@@ -368,93 +372,98 @@ def get_parameters_from_crust1(lat, lon, depth_samples):
     return(vps, vss, rhos, moho, topography)
 
 
+if __name__ == '__main__':
+    lats = []
+    lons = []
+    mohos = []
+    vs_plot = []
+    vp_plot = []
+    rho_plot = []
+    topo_plot = []
 
+    out_file = open(output_file, 'w')
+    out_file.write("LON\tLAT\tDEP\tVP\tVS\tRHO\tMOHO\n")
+    for lon in np.arange(lon_min, lon_max + interval, interval):
+        print(lon)
+        print(time.strftime("%H:%M"))
 
-lats = []
-lons = []
-mohos = []
-vs_plot = []
-vp_plot = []
-rho_plot = []
-topo_plot = []
-
-out_file = open(output_file, 'w')
-out_file.write("LON\tLAT\tDEP\tVP\tVS\tRHO\tMOHO\n")
-for lon in np.arange(lon_min, lon_max + interval, interval):
-    for lat in np.arange(lat_min, lat_max + interval, interval):
-        deps = np.arange(0, max_depth + depth_interval, depth_interval)
-        # get the depth index for plotting
-        ix_plot = np.argmin(np.abs(deps - depth_to_plot))
-        if lat >= lat_min_model and lat <= lat_max_model and\
-            lon >= lon_min_model and lon <= lon_max_model:
-            vp, vs, rho, moho, top = get_parameters_from_model(lat, lon, deps)
-        else:
-            if [lat, lon] in missing_locations and subst_miss:
-                vp, vs, rho, moho, top = get_parameters_interp(lat, lon, deps)
-            elif subst_crust1:
-                # substitute missing values from crust1
-                vp, vs, rho, moho, top =\
-                    get_parameters_from_crust1(lat, lon, deps)
+        for lat in np.arange(lat_min, lat_max + interval, interval):
+            deps = np.arange(0, max_depth + depth_interval, depth_interval)
+            # get the depth index for plotting
+            ix_plot = np.argmin(np.abs(deps - depth_to_plot))
+            if lat >= lat_min_model and lat <= lat_max_model and\
+                lon >= lon_min_model and lon <= lon_max_model:
+                vp, vs, rho, moho, top = get_parameters_from_model(lat, lon, deps)
             else:
-                lats.append(lat)
-                lons.append(lon)
-                mohos.append(np.nan)
-                vs_plot.append(np.nan)
-                vp_plot.append(np.nan)
-                rho_plot.append(np.nan)
-                topo_plot.append(0.0)
-                continue
-        lats.append(lat)
-        lons.append(lon)
-        # if lon == 143.5 and lat in [41., 41.5, 42.]:
-        #     moho = 35
-        # if lat == 45. and lon == 140.:
-        #     moho = 28.
-        # if lat == 33.5 and lon == 136.:
-        #     moho = 33
+                if [lat, lon] in missing_locations and subst_miss:
+                    vp, vs, rho, moho, top = get_parameters_interp(lat, lon, deps)
+                elif subst_crust1:
+                    # substitute missing values from crust1
+                    vp, vs, rho, moho, top =\
+                        get_parameters_from_crust1(lat, lon, deps)
+                else:
+                    lats.append(lat)
+                    lons.append(lon)
+                    mohos.append(np.nan)
+                    vs_plot.append(np.nan)
+                    vp_plot.append(np.nan)
+                    rho_plot.append(np.nan)
+                    topo_plot.append(0.0)
+                    continue
+            lats.append(lat)
+            lons.append(lon)
+            # if lon == 143.5 and lat in [41., 41.5, 42.]:
+            #     moho = 35
+            # if lat == 45. and lon == 140.:
+            #     moho = 28.
+            # if lat == 33.5 and lon == 136.:
+            #     moho = 33
 
-        mohos.append(moho)
+            mohos.append(moho)
 
-        vs_plot.append(vs[ix_plot])
-        vp_plot.append(vp[ix_plot])
-        rho_plot.append(rho[ix_plot])
-        topo_plot.append(top)
-        for i in range(len(deps)):
-            out_file.write("%4.1f\t%3.1f\t%4.1f\t%8.6f\t%8.6f\t%8.6f\t%4.1f\n"
-                           % (lon, lat, deps[i], vp[i], vs[i], rho[i], moho))
-lats = np.asarray(lats)
-lons = np.asarray(lons)
-mohos = np.asarray(mohos)
-vs_plot = np.asarray(vs_plot)
-topo_plot = np.asarray(topo_plot)
-# print('topo / bathy min max', topo_plot.min(), topo_plot.max())
-# print('Moho min / max', mohos.min(), mohos.max())
-vprange = [brocher_vs_to_vp(vsi) for vsi in vsrange]
-rhorange = [brocher_vp_to_rho(vpi) for vpi in vprange]
-# print('topo', topo_plot.shape)
-# print('lat, lon shapes', lats.shape, lons.shape)
-plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(mohos),
-          sequential=True, v_min=15, v=48., size=50, cmap=plt.cm.gist_rainbow,
-          quant_unit='Moho depth (km)', outfile=outfilename + '_moho.png',
-          axislabelpad=-0.1)
+            vs_plot.append(vs[ix_plot])
+            vp_plot.append(vp[ix_plot])
+            rho_plot.append(rho[ix_plot])
+            topo_plot.append(top)
+            for i in range(len(deps)):
+                out_file.write("%4.1f\t%3.1f\t%4.1f\t%8.6f\t%8.6f\t%8.6f\t%4.1f\n"
+                               % (lon, lat, deps[i], vp[i], vs[i], rho[i], moho))
+    print(np.arange(lon_min, lon_max + interval, interval).shape)
+    print(np.arange(lat_min, lat_max + interval, interval).shape)
 
-plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(vs_plot),
-          sequential=True, v_min=vsrange[0], v=vsrange[1], size=50,
-          quant_unit='vs (km/s)', cmap=cm, outfile=outfilename + '_vs.png',
-          axislabelpad=-0.1)
+    lats = np.asarray(lats)
+    lons = np.asarray(lons)
+    mohos = np.asarray(mohos)
+    vs_plot = np.asarray(vs_plot)
+    topo_plot = np.asarray(topo_plot)
+    # print('topo / bathy min max', topo_plot.min(), topo_plot.max())
+    # print('Moho min / max', mohos.min(), mohos.max())
+    vprange = [brocher_vs_to_vp(vsi) for vsi in vsrange]
+    rhorange = [brocher_vp_to_rho(vpi) for vpi in vprange]
+    # print('topo', topo_plot.shape)
+    # print('lat, lon shapes', lats.shape, lons.shape)
+    plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(mohos),
+              sequential=True, v_min=15, v=48., size=50, cmap=plt.cm.gist_rainbow,
+              quant_unit='Moho depth (km)', outfile=outfilename + '_moho.png',
+              axislabelpad=-0.1)
 
-plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(vp_plot),
-          sequential=True, v_min=vprange[0], v=vprange[1], size=50,
-          quant_unit='vp (km/s)', cmap=cm, outfile=outfilename + '_vp.png',
-          axislabelpad=-0.1)
+    plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(vs_plot),
+              sequential=True, v_min=vsrange[0], v=vsrange[1], size=50,
+              quant_unit='vs (km/s)', cmap=cm, outfile=outfilename + '_vs.png',
+              axislabelpad=-0.1)
 
-plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(topo_plot),
-          sequential=False, size=50,
-          quant_unit='Topo / Bathy (km)', outfile=outfilename + '_topo.png',
-          axislabelpad=-0.1, v_min=topo_plot.min(), v=topo_plot.max(),
-          cmap=plt.cm.gist_earth, title='ETOPO1 smooth')
+    plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(vp_plot),
+              sequential=True, v_min=vprange[0], v=vprange[1], size=50,
+              quant_unit='vp (km/s)', cmap=cm, outfile=outfilename + '_vp.png',
+              axislabelpad=-0.1)
 
-plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(rho_plot),
-          sequential=True, v_min=rhorange[0], v=rhorange[1], size=50,
-          quant_unit='rho (g/m^3)', cmap=cm, outfile=outfilename + '_rho.png',
-          axislabelpad=-0.1)
+    plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(topo_plot),
+              sequential=False, size=50,
+              quant_unit='Topo / Bathy (km)', outfile=outfilename + '_topo.png',
+              axislabelpad=-0.1, v_min=topo_plot.min(), v=topo_plot.max(),
+              cmap=plt.cm.gist_earth, title='ETOPO2 smooth')
+
+    plot_grid(np.asarray(lons), np.asarray(lats), np.asarray(rho_plot),
+              sequential=True, v_min=rhorange[0], v=rhorange[1], size=50,
+              quant_unit='rho (g/m^3)', cmap=cm, outfile=outfilename + '_rho.png',
+              axislabelpad=-0.1)

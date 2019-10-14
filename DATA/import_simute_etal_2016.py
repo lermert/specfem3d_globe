@@ -147,7 +147,7 @@ for lon in lons:
         # get moho depth
         moho, topo = get_smoothed_moho_crust1(lat, lon)
         moho = abs(moho)
-        deps -= topo
+        # deps -= topo
         ix_plot_depth = np.argmin(np.abs(deps - depth_to_plot))
         radii = 6371. - deps
 

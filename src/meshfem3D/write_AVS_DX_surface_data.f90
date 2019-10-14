@@ -51,7 +51,7 @@
   double precision r,rho,vp,vs,Qkappa,Qmu
   double precision vpv,vph,vsv,vsh,eta_aniso
   double precision x,y,z,theta,phi_dummy,cost,p20,ell,factor
-  real(kind=CUSTOM_REAL) dvp,dvs
+  real(kind=CUSTOM_REAL) dvp,dvs, tempvs
 
   double precision xstore(NGLLX,NGLLY,NGLLZ,nspec)
   double precision ystore(NGLLX,NGLLY,NGLLZ,nspec)
@@ -256,14 +256,24 @@
                                /rhostore(i,j,k,ispec)) - sngl(vp))/sngl(vp)
                           ! dvs = dvs + (sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec)) - sngl(vs))/sngl(vs)
                           ! laura: want to know absolute values
-                          dvs = dvs + sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
+                          ! dvs = dvs + sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
+                          ! laura: want to know minimum shear wave values related to each element!
+                          tempvs = sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
+                          if (dvs .eq. 0) then
+                            dvs = tempvs
+                          else if (tempvs .lt. dvs) then
+                            print*, 'Vs here: ', dvs
+                            dvs = tempvs
+                          endif
+
                        endif
 
                     enddo
                  enddo
               enddo
               dvp = dvp / np
-              dvs = dvs / np
+              ! dvs = dvs / np
+              ! laura: want to know minimum vs rather than average vs. So commented out the above line.
            else
               dvp = 0.0
               dvs = 0.0

@@ -1,4 +1,12 @@
 import numpy as np
+from scipy.interpolate import interp1d
+
+
+def interp_profile(depth, parameters, new_depth, kind='linear'):
+
+    f = interp1d(depth, parameters, kind=kind, fill_value="extrapolate",
+                 bounds_error=False)
+    return(f(new_depth))
 
 
 def smooth_weights_CAP_vardegree(lon, lat, cap_degree,

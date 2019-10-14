@@ -6,7 +6,6 @@ from scipy.interpolate import interp1d
 from noisi_v1.util.geo import geograph_to_geocent
 from smoothing_routines import smooth_weights_CAP_vardegree
 import time
-import os
 from netCDF4 import Dataset
 topo_file = 'ETOPO2v2g_f4.nc'
 topo = Dataset(topo_file)
@@ -45,12 +44,12 @@ dz = 1.0
 nx = 144  # lat
 ny = 158  # lon
 nz = 60
-interval = 0.2
+interval = 1.0
 min_moho, max_moho = (7., 50.)
 depth_interval = 1.0  # in km
 max_depth = 59.0
 depth_to_plot = 40.0
-min_thick_sedi = 1.  # in km, for crust1.0
+min_thick_sedi = 0.0  # in km, for crust1.0
 cm = plt.cm.gist_rainbow
 outfilename = 'nishida_model_new'
 vp_vs_rho = np.loadtxt(path_to_model)[:, 4:]
@@ -221,6 +220,9 @@ def get_smoothed_parameters_crust1(lat, lon):
         depths_crust1 = crust1_layers[ix_crust, :]
         crust_thickness = - (depths_crust1[1:] - depths_crust1[:-1])
         thick_sedi = crust_thickness[2:5].sum()
+        if i == 0:
+            print('Sediment thickness, km ', thick_sedi)
+            print('vs, km/s ', crust1_vs[ix_crust, 2])
         if thick_sedi < min_thick_sedi:
             crust1_vp[ix_crust, 2:5] = crust1_vp[ix_crust, 5]
             crust1_vs[ix_crust, 2:5] = crust1_vs[ix_crust, 5]
@@ -244,13 +246,23 @@ def get_parameters_from_crust1(lat, lon, depth_samples):
     crust_depth_sm, crust1_vp_sm, crust1_vs_sm, crust1_rho_sm =\
         get_smoothed_parameters_crust1(lat, lon)
     crust_thickness = - (crust_depth_sm[1:] - crust_depth_sm[:-1])
-
-    z_sedi_1 = crust_thickness[2]
-    z_sedi_2 = crust_thickness[2:4].sum()
-    z_sedi_3 = crust_thickness[2:5].sum()
-    z_cryst_1 = crust_thickness[2:6].sum()
-    z_cryst_2 = crust_thickness[2:7].sum()
-    z_cryst_3 = crust_thickness[2:].sum()
+    
+    # this is what specfem is doing and I copied it for consistency, however: the water layer is not taken into account.
+    # this causes slight issues if topography is corrected for, so I will introduce accounting for the water depth
+    if not smash_topo:
+        z_sedi_1 = crust_thickness[2]
+        z_sedi_2 = crust_thickness[2:4].sum()
+        z_sedi_3 = crust_thickness[2:5].sum()
+        z_cryst_1 = crust_thickness[2:6].sum()
+        z_cryst_2 = crust_thickness[2:7].sum()
+        z_cryst_3 = crust_thickness[2:].sum()
+    else:
+        z_sedi_1 = crust_thickness[0:3].sum()
+        z_sedi_2 = crust_thickness[0:4].sum()
+        z_sedi_3 = crust_thickness[0:5].sum()
+        z_cryst_1 = crust_thickness[0:6].sum()
+        z_cryst_2 = crust_thickness[0:7].sum()
+        z_cryst_3 = crust_thickness.sum()
     # moho = abs(crust_depth_sm[-1])
     topo = -crust_depth_sm[0]
 

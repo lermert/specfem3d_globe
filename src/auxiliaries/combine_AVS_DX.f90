@@ -756,8 +756,7 @@
     rnorm_factor = maxval(dabs(dvs(:)))
 
 ! laura: want to know values in kmps
-    dvs(:) = dvs(:) / 0.1459938d0
-
+  dvs(:) = dvs(:) / 0.1459938d0
 ! map to [-1,1]
 ! laura outcommented
 !     dvs(:) = dvs(:) / rnorm_factor
@@ -838,7 +837,7 @@
         val_color = -dvp(numelem + iglobelemoffset)
       else if (icolor == 6) then
 !     minus sign to get the color scheme right: blue is fast (+) and red is slow (-)
-        val_color = -dvs(numelem + iglobelemoffset)
+        val_color = dvs(numelem + iglobelemoffset)
       else if (icolor == 7) then
         val_color = elevation_sphere(numelem + iglobelemoffset)
 

@@ -45,7 +45,8 @@
   double precision, parameter :: CJCRUST_SAMPLE_DEP = 0.05d0
 
   ! arrays for crustal model
-  integer, parameter :: CJCRUST_NLON = 85, CJCRUST_NLAT = 89, CJCRUST_NDEP = 1021
+  integer, parameter :: CJCRUST_NLON = 142, CJCRUST_NLAT = 90, CJCRUST_NDEP = 256
+  ! integer, parameter :: CJCRUST_NLON = 85, CJCRUST_NLAT = 89, CJCRUST_NDEP = 1021
 
   double precision,dimension(:,:,:),allocatable :: lon_cj,lat_cj,moho_cj,depth_cj
   double precision,dimension(:,:,:),allocatable :: vp_cj,vs_cj,rho_cj
