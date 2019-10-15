@@ -51,7 +51,7 @@
   double precision r,rho,vp,vs,Qkappa,Qmu
   double precision vpv,vph,vsv,vsh,eta_aniso
   double precision x,y,z,theta,phi_dummy,cost,p20,ell,factor
-  real(kind=CUSTOM_REAL) dvp,dvs, tempvs
+  real(kind=CUSTOM_REAL) dvp,dvs  !, tempvs
 
   double precision xstore(NGLLX,NGLLY,NGLLZ,nspec)
   double precision ystore(NGLLX,NGLLY,NGLLZ,nspec)
@@ -254,18 +254,18 @@
                        else
                           dvp = dvp + (sqrt((kappavstore(i,j,k,ispec)+4.*muvstore(i,j,k,ispec)/3.) &
                                /rhostore(i,j,k,ispec)) - sngl(vp))/sngl(vp)
-                           dvs = dvs + (sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec)) - sngl(vs))/sngl(vs)
+                          ! dvs = dvs + (sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec)) - sngl(vs))/sngl(vs)
                           ! laura: if want to know absolute values, uncomment the line below
-                          ! dvs = dvs + sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
+                          dvs = dvs + sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
                           ! laura: if want to know minimum shear wave values as opposed to average,
                           ! uncomment below
                           ! tempvs = sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
-                          if (dvs .eq. 0) then
-                            dvs = tempvs
-                          else if (tempvs .lt. dvs) then
-                            print*, 'Vs here: ', dvs
-                            dvs = tempvs
-                          endif
+                          !if (dvs .eq. 0) then
+                          !  dvs = tempvs
+                          !else if (tempvs .lt. dvs) then
+                          !  print*, 'Vs here: ', dvs
+                          !  dvs = tempvs
+                          !endif
 
                        endif
 
