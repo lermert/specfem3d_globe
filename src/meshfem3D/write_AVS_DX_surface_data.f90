@@ -254,11 +254,12 @@
                        else
                           dvp = dvp + (sqrt((kappavstore(i,j,k,ispec)+4.*muvstore(i,j,k,ispec)/3.) &
                                /rhostore(i,j,k,ispec)) - sngl(vp))/sngl(vp)
-                          ! dvs = dvs + (sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec)) - sngl(vs))/sngl(vs)
-                          ! laura: want to know absolute values
+                           dvs = dvs + (sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec)) - sngl(vs))/sngl(vs)
+                          ! laura: if want to know absolute values, uncomment the line below
                           ! dvs = dvs + sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
-                          ! laura: want to know minimum shear wave values related to each element!
-                          tempvs = sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
+                          ! laura: if want to know minimum shear wave values as opposed to average,
+                          ! uncomment below
+                          ! tempvs = sqrt(muvstore(i,j,k,ispec)/rhostore(i,j,k,ispec))
                           if (dvs .eq. 0) then
                             dvs = tempvs
                           else if (tempvs .lt. dvs) then
@@ -272,8 +273,9 @@
                  enddo
               enddo
               dvp = dvp / np
-              ! dvs = dvs / np
-              ! laura: want to know minimum vs rather than average vs. So commented out the above line.
+              dvs = dvs / np
+              ! laura: if want to know minimum vs rather than average vs,
+              ! comment out the above line.
            else
               dvp = 0.0
               dvs = 0.0

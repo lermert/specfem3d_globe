@@ -128,7 +128,6 @@ def get_smooth_parameters_crust1(model, lat, lon):
                 #   print('Sediment thickness, km ', thick_sedi)
                 #   print('vs, km/s ', model.vs[ix_crust, 2])
                 if thick_sedi < model.min_thick_sedi:
-                    print(thick_sedi)
                     model.vp[ix_crust, 2:5] = model.vp[ix_crust, 5]
                     model.vs[ix_crust, 2:5] = model.vs[ix_crust, 5]
                     model.rho[ix_crust, 2:5] = model.rho[ix_crust, 5]
