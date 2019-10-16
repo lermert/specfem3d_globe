@@ -17,17 +17,17 @@ topo_file = 'ETOPO2v2g_f4.nc'
 topo = Dataset(topo_file)
 topo_lat = topo.variables['y'][:]
 topo_lon = topo.variables['x'][:]
-cap_degree_nishida = 0.25
-cap_degree_zheng = 0.75
+cap_degree_nishida = 0.5
+cap_degree_zheng = 1.0
 cap_degree_crust1 = 1.0
 n_theta = 4
 n_phi = 20
-output_file = 'combined_model_new.txt'
+output_file = 'combined_model_1.txt'
 lat_min, lat_max = (16, 60.)
 lon_min, lon_max = (100, 170.)
 interval = 0.2
 min_moho, max_moho = (7., 50.)
-depth_interval = 0.1  # in km
+depth_interval = 0.2  # in km
 max_depth = 50
 smash_topo = True  # compress upper layer to account for thicker crust due to
 # topography during meshing
@@ -285,7 +285,7 @@ def determine_smoothing(models, lat, lon):
                 loc_cov += mod1.coverage[ix_lat, ix_lon]
             if loc_cov == len(ix_lats) and loc_cov > 0:
                 cover_cnt += 1
-    if cover_cnt == mod1.n_theta * mod1.n_phi:
+    if cover_cnt > 0.25 * mod1.n_theta * mod1.n_phi:
         # print('Using Nishida Model for lat, lon ', lat, lon)
         return(mod1.cap_degree, mod1.n_theta, mod1.n_phi)
 
@@ -304,7 +304,7 @@ def determine_smoothing(models, lat, lon):
                 loc_cov += mod2.coverage[ix_lat, ix_lon]
             if loc_cov == len(ix_lats) and loc_cov > 0:
                 cover_cnt += 1
-    if cover_cnt == mod2.n_theta * mod2.n_phi:
+    if cover_cnt > 0.35 * mod2.n_theta * mod2.n_phi:
         # print('Using Zheng Model for lat, lon ', lat, lon)
         return(mod2.cap_degree, mod2.n_theta, mod2.n_phi)
     else:

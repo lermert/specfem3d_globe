@@ -42,11 +42,11 @@
   double precision, parameter :: JPCRUST_LAT_MIN =  16.0d0
   double precision, parameter :: JPCRUST_LAT_MAX =  60.d0
   double precision, parameter :: JPCRUST_SAMPLE = 0.2d0
-  double precision, parameter :: JPCRUST_SAMPLE_DEP = 0.1d0
+  double precision, parameter :: JPCRUST_SAMPLE_DEP = 0.2d0
 
   ! arrays for crustal model
   integer, parameter :: JPCRUST_NLON = 351, JPCRUST_NLAT = 221, &
-  JPCRUST_NDEP = 501
+  JPCRUST_NDEP = 251
 
   double precision,dimension(:,:,:),allocatable :: lon_jp,lat_jp
   double precision, dimension(:, :, :), allocatable :: moho_jp,depth_jp
